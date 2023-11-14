@@ -1,5 +1,5 @@
 """
-WSGI config for project project.
+WSGI config for core core.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -12,6 +12,6 @@ import os, sys
 from django.core.wsgi import get_wsgi_application
 
 sys.path.append("/opt/venv/lib/python3.10/site-packages")
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 application = get_wsgi_application()
