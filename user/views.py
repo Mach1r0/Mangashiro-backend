@@ -6,7 +6,7 @@ import hashlib
 from rest_framework.response import Response
 from rest_framework import viewsets
 # Create your views here.
-class userView(viewsets.ViewSet):
+class UserView(viewsets.ViewSet):
     def create(self, request):
         password = hashlib.sha256(request.data.get('password',None).enconde('utf-8'))
         user = UserSerializer(data={
