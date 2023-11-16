@@ -1,8 +1,9 @@
 from django.db import models
+from enum import Enum
 from core.utils import Status
 
-# Create your models here. 
-class Anime(models.Model):
+# Create your models here.
+class Manga(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.TextField(max_length=256)
     releaseData = models.DateField()
@@ -15,3 +16,4 @@ class Anime(models.Model):
         choices=[(tag, tag.value) for tag in Status],
         default=Status.COMPLETED.name,
     )
+    

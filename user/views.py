@@ -9,13 +9,13 @@ from rest_framework import viewsets
 # Create your views here.
 class UserView(viewsets.ViewSet):
     def create(self, request):
-        password = hashlib.sha256(request.data.get('password',None).enconde(encoding='UTF-8'))
+        password = hashlib.sha256(request.data.get('password',None).encode('utf-8'))
         user = UserSerializer(data={
             'email': request.data.get('email',None),
             'password': str(password.hexdigest())
         })
 
-        if user.is_valid(raise_exeption=True):
+        if user.is_valid(raise_exception=True):
             user.save()
             return Response(user.data, status=201)
         else:
