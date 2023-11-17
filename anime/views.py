@@ -7,9 +7,7 @@ from rest_framework.response import Response
 from .serializer import AnimeSerializer
 
 class AnimeView(viewsets.ViewSet):
-
-    @api_view(['POST'])
-    def create(request):
+    def create(self, request):
         serializer = AnimeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
