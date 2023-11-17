@@ -40,8 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'user',
-    'anime'
-]
+    'tag',
+    'staff',
+    'anime',
+    'manga',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
