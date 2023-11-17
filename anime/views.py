@@ -1,19 +1,17 @@
-from rest_framework import viewsets
 from rest_framework.response import Response
-from anime.models import Anime
-from anime.serializers import AnimeSerializer
+from rest_framework import viewsets
+from rest_framework import status
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializer import AnimeSerializer
 
-class AnimeViewSet(viewsets.ViewSet):
-    """
-    A simple ViewSet for listing or retrieving animes.
-    """
-    def list(self, request):
-        queryset = Anime.objects.all()
-        serializer = AnimeSerializer(queryset, many=True)
-        return Response(serializer.data)
+class AnimeView(viewsets.ViewSet):
 
-    def retrieve(self, request, pk=None):
-        queryset = Anime.objects.all()
-        anime = get_object_or_404(queryset, pk=pk)
-        serializer = AnimeSerializer(anime)
-        return Response(serializer.data)
+    @api_view(['POST'])
+    def create(request):
+        serializer = AnimeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

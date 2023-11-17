@@ -1,16 +1,14 @@
 from django.shortcuts import render
 from django.views import View
-from user.models import User
-from user.serializer import UserSerializer
+from anime.models import Anime
+from anime.serializer import AnimeSerializer
 import django.core.exceptions as exceptions 
-import hashlib
 from rest_framework.response import Response
 from rest_framework import viewsets
 # Create your views here.
 class UserView(viewsets.ViewSet):
     def create(self, request):
-        password = hashlib.sha256(request.data.get('password',None).encode('utf-8'))
-        user = UserSerializer(data={
+        Anime = UserSerializer(data={
             'email': request.data.get('email',None),
             'password': str(password.hexdigest())
         })
