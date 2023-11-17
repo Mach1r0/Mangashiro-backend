@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from anime.models import Anime
+from staff.models import Staff
 
-class AnimeSerializer(serializers.ModelSerializer):
+class StaffSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Anime
+        model = staff
         fields = '__all__'
