@@ -11,9 +11,8 @@ class Anime(models.Model):
     description = models.TextField()
     tag = models.ManyToManyField('tag.Tag')  # Assuming 'tag_app' is the name of your tag app
     staff = models.ManyToManyField('staff.Staff')  # Assuming 'staff_app' is the name of your staff app
-    status_type = models.CharField(  # Renamed 'status' to 'status_type'
+    status_type = models.TextField(  # Renamed 'status' to 'status_type'
         max_length=10,
         choices=[(status, status.value) for status in Status],
         default=Status.COMPLETED.name,
     )
-    
