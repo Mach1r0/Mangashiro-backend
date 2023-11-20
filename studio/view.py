@@ -4,11 +4,11 @@ from rest_framework import status
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializer import MangaSerializer
+from .serializer import StudioSerializer
 
-class MangaView(viewsets.ViewSet):
+class StudioView(viewsets.ViewSet):
     def create(self, request):
-        serializer = MangaSerializer(data=request.data)
+        serializer = StudioSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

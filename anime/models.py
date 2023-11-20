@@ -13,6 +13,6 @@ class Anime(models.Model):
     staff = models.ManyToManyField('staff.Staff')  # Assuming 'staff_app' is the name of your staff app
     status_type = models.TextField(  # Renamed 'status' to 'status_type'
         max_length=10,
-        choices=[(status, status.value) for status in Status],
+        choices=[(status.value, status.value) for status in Status],
         default=Status.COMPLETED.name,
     )
