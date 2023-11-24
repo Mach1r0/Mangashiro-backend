@@ -24,6 +24,7 @@ class UserView(viewsets.ViewSet):
             user = user_serializer.save()
             # Hash the user's password and save the user again
             user.password = hashlib.sha256(request.data.get('password', None).encode('utf-8'))
+            user.password = str(user.password.hexdigest())
             user.save()
             # Create a JWT refresh token for the user
             refresh = RefreshToken.for_user(user)
