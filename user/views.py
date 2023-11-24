@@ -1,25 +1,25 @@
-from django.shortcuts import render
-from django.views import View
-from anime.models import Anime
-from anime.serializer import AnimeSerializer
 from django.contrib.auth.hashers import make_password
-import django.core.exceptions as exceptions 
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework import viewsets
-from django.views.decorators.http import require_http_methods
-from user.serializer import UserSerializer  # replace 'your_app_name' with the name of your app
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from user.serializer import UserSerializer  # replace 'user' with the name of your app
+from user.models import User  # replace 'user' with the name of your app
 
-# Create your views here.
-class UserView(viewsets.ViewSet):
-    @require_http_methods(["POST"])
-    def create(self, request):
-        user_serializer = UserSerializer(data={
-            'email': request.data.get('email',None),
-            'password': make_password(request.data.get('password', ''))
-        })
-
-        if user_serializer.is_valid(raise_exception=True):
-            user_serializer.save()
-            return Response(user_serializer.data, status=201)
+class UserView(APIView):
+    def post(self, request):
+        user_serializer = UserSerializer(data=request.data)
+        if user_serializer.is_valid():
+            user = user_serializer.save()
+            user.password = make_password(user.password)
+            user.save()
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_201_CREATED)
         else:
-            return Response(user_serializer.errors, status=400)
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def telalogin(self,request):
+        
