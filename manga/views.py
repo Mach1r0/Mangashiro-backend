@@ -5,8 +5,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializer import MangaSerializer
+from django.views.decorators.http import require_http_methods
 
 class MangaView(viewsets.ViewSet):
+    @require_http_methods({"POST"})
     def create(self, request):
         serializer = MangaSerializer(data=request.data)
         if serializer.is_valid():
