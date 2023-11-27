@@ -37,15 +37,13 @@ class UserView(viewsets.ViewSet):
             # If the data is not valid, return the errors in the response
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    # Method for user login
+    # Method for user logi'n
     def login(self, request):
         try:
             login_email = request.data.get('email', None)
             user = User.objects.get(email=login_email)
         # Authenticate the user
             password = hashlib.sha256(request.data.get('password', None).encode())
-            print (password)
-            print (user.password)
             if password.hexdigest() == user.password:
                 print("gets here")
         # If the user is authenticated, create a JWT refresh token for the user
@@ -58,7 +56,7 @@ class UserView(viewsets.ViewSet):
             else:
             # If the user is not authenticated, return an error in the response
                 return Response({'error': 'Invalid Credentials password does not match',
-                                 "password" : user.password}, status=status.HTTP_400_BAD_REQUEST)
+ "password" : user.password}, status=status.HTTP_400_BAD_REQUEST)
         except (User.DoesNotExist, exceptions.FielError):
             print("none here")
             return Response({'error': 'Invalid Credentials user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
