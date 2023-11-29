@@ -13,29 +13,35 @@ import hashlib
 
 
 class UserView(viewsets.ViewSet):
-    # Method for user registration
+    # Method for user registration   
     def create(self, request):
         # Create a UserSerializer with the request data
         user_serializer = UserSerializer(data=request.data)
-        
-        # Validate the data
-        if user_serializer.is_valid():
-            # If the data is valid, create a User instance
-            user = user_serializer.save()
-            # Hash the user's password and save the user again
-            user.password = hashlib.sha256(request.data.get('password', None).encode('utf-8'))
-            user.password = str(user.password.hexdigest())
-            user.save()
-            # Create a JWT refresh token for the user
-            refresh = RefreshToken.for_user(user)
-            # Return the refresh and access tokens in the response
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=status.HTTP_201_CREATED)
-        else:
-            # If the data is not valid, return the errors in the response
+        test_user = request.data.get('email', None)
+        if(test_user == User.objects.get(email=test_user)):
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+        else:
+            # Validate the data
+            if user_serializer.is_valid():
+                # If the data is valid, create a User instance
+                user = user_serializer.save()
+                # Hash the user's password and save the user again
+                user.password = hashlib.sha256(request.data.get('password', None).encode('utf-8'))
+                user.password = str(user.password.hexdigest())
+                user.save()
+                # Create a JWT refresh token for the user
+                refresh = RefreshToken.for_user(user)
+                # Return the refresh and access tokens in the response
+                print(user.password)
+                print(user.email)
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }, status=status.HTTP_201_CREATED)
+            else:
+                # If the data is not valid, return the errors in the response
+                return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Method for user logi'n
     def login(self, request):
@@ -43,6 +49,7 @@ class UserView(viewsets.ViewSet):
             login_email = request.data.get('email', None)
             user = User.objects.get(email=login_email)
         # Authenticate the user
+
             password = hashlib.sha256(request.data.get('password', None).encode())
             if password.hexdigest() == user.password:
                 print("gets here")
