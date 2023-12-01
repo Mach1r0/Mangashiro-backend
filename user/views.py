@@ -18,31 +18,30 @@ class UserView(viewsets.ViewSet):
         # Create a UserSerializer with the request data
         user_serializer = UserSerializer(data=request.data)
         test_user = request.data.get('email', None)
-        if(test_user == User.objects.get(email=test_user)):
+        try:
+            User.objects.get(email=test_user)
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-        else:
-            # Validate the data
-            if user_serializer.is_valid():
+        except User.DoesNotExist:
+                # Validate the data
+                if user_serializer.is_valid():
                 # If the data is valid, create a User instance
-                user = user_serializer.save()
+                    user = user_serializer.save()
                 # Hash the user's password and save the user again
-                user.password = hashlib.sha256(request.data.get('password', None).encode('utf-8'))
-                user.password = str(user.password.hexdigest())
-                user.save()
-                # Create a JWT refresh token for the user
-                refresh = RefreshToken.for_user(user)
+                    user.password = hashlib.sha256(request.data.get('password', None).encode('utf-8'))
+                    user.password = str(user.password.hexdigest())
+                    user.save()
+                # Create a JWT refresh token for the user 
+                    refresh = RefreshToken.for_user(user)
                 # Return the refresh and access tokens in the response
-                print(user.password)
-                print(user.email)
-                return Response({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }, status=status.HTTP_201_CREATED)
-            else:
+                    print(user.password)
+                    print(user.email)
+                    return Response({
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }, status=status.HTTP_201_CREATED)
+                else:
                 # If the data is not valid, return the errors in the response
-                return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+                    return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     # Method for user logi'n
     def login(self, request):
         try:
@@ -64,6 +63,6 @@ class UserView(viewsets.ViewSet):
             # If the user is not authenticated, return an error in the response
                 return Response({'error': 'Invalid Credentials password does not match',
  "password" : user.password}, status=status.HTTP_400_BAD_REQUEST)
-        except (User.DoesNotExist, exceptions.FielError):
+        except (User.DoesNotExist, exceptions.FieldError):
             print("none here")
             return Response({'error': 'Invalid Credentials user does not exist'}, status=status.HTTP_400_BAD_REQUEST)

@@ -7,15 +7,14 @@ from core.utils import Status
 
 class Manga(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.TextField(max_length=256)
+    title = models.TextField(max_length=256)
+    type = models.TextField(max_length=256)
+    volume = models.IntegerField()
+    tag = models.ManyToManyField('tag.Tag')
     releaseData = models.DateField(null=True)
     endData = models.DateField()
-    Description = models.TextField(max_length=256)
-    # Assuming 'tag_app' is the name of your tag app
-    tag = models.ManyToManyField('tag.Tag')
-    # Assuming 'staff_app' is the name of your staff app
-    staff = models.ManyToManyField('staff.Staff')
-    status_type = models.TextField(  # Renamed 'status' to 'status_type'
+    models.ImageField(_(""), upload_to=None, height_field=None, width_field=None, max_length=None)
+     status_type = models.TextField(  # Renamed 'status' to 'status_type'
         max_length=10,
         choices=[(status.value, status.value) for status in Status],
         default=Status.COMPLETED.name,
