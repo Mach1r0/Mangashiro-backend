@@ -13,8 +13,8 @@ class Manga(models.Model):
     tag = models.ManyToManyField('tag.Tag')
     releaseData = models.DateField(null=True)
     endData = models.DateField()
-    models.ImageField(_(""), upload_to=None, height_field=None, width_field=None, max_length=None)
-     status_type = models.TextField(  # Renamed 'status' to 'status_type'
+    models.ImageField((""), upload_to=None, height_field=None, width_field=None, max_length=None)
+    status_type = models.TextField(  # Renamed 'status' to 'status_type'
         max_length=10,
         choices=[(status.value, status.value) for status in Status],
         default=Status.COMPLETED.name,
