@@ -1,9 +1,10 @@
 from django.db import models
-from anime.models import Anime# Create your models here.
+from anime.models import Anime
+from manga.models import Manga
+from staff.models import Staff
+
 class Studio(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nome: models.TextField(max_length=256)
-    anime = models.ManyToManyField('anime.Anime')
-    manga = models.ManyToManyField('manga.Manga')
-    staff = models.ManyToManyField('staff.Staff')
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='studios')
+    nome = models.CharField(max_length=256)
+    anime = models.ForeignKey(Anime, verbose_name=("Anime"), on_delete=models.CASCADE, related_name='studios')
+    manga = models.ForeignKey(Manga, verbose_name=("Manga"), on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, verbose_name=("Staff"), on_delete=models.CASCADE)

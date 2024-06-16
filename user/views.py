@@ -12,7 +12,7 @@ from user.models import User  # replace 'user' with the name of your app
 import hashlib
 
 
-class UserView(viewsets.ViewSet):
+class UserViewSet(viewsets.ViewSet):
     # Method for user registration   
     def create(self, request):
         # Create a UserSerializer with the request data

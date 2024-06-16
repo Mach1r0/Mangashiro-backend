@@ -1,21 +1,20 @@
 from django.db import models
-from enum import Enum
-from core.utils import Status
-
-# Create your models here.
-
+from tag.models import Tag 
 
 class Manga(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    title = models.TextField(max_length=256)
-    type = models.TextField(max_length=256)
+    Status_choice = [
+        ('Paused', 'On Hold'),
+        ("FINISHED",  "Finished"),
+        ("COMPLETED",  "Completed"),
+        ("CANCELLED",  "Cancelled")
+    ]
+
+    title = models.CharField(max_length=256)  
+    slug = models.CharField(max_length=256, unique=True, blank=False, null=False)
+    type = models.CharField(max_length=256)  
     volume = models.IntegerField()
-    tag = models.ManyToManyField('tag.Tag')
-    releaseData = models.DateField(null=True)
-    endData = models.DateField()
-    models.ImageField((""), upload_to=None, height_field=None, width_field=None, max_length=None)
-    status_type = models.TextField(  # Renamed 'status' to 'status_type'
-        max_length=10,
-        choices=[(status.value, status.value) for status in Status],
-        default=Status.COMPLETED.name,
-    )
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tag')  
+    release_date = models.DateField(null=True)  
+    end_date = models.DateField() 
+    image = models.ImageField(upload_to='manga/', null=True, blank=True)  
+    status_type = models.CharField(choices=Status_choice, max_length=30)

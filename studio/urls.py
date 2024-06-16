@@ -1,9 +1,10 @@
-from django.urls import path
-from studio.view import StudioView
+from .views import StudioView
+from django.urls import include, path 
+from rest_framework.routers import DefaultRouter  
+
+router = DefaultRouter()
+router.register('', StudioView)
 
 urlpatterns = [
-    path('create/', StudioView.as_view({
-        'post': 'create'
-    })),
-    
+    path('', include(router.urls))
 ]
