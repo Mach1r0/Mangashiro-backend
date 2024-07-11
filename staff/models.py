@@ -1,7 +1,12 @@
 from django.db import models
 
 class Staff(models.Model):
-    autor = models.CharField(max_length=256)
-    desenhista  = models.CharField(max_length=256, null=True)
-    assistente = models.CharField(max_length=255, null=True)
-    
+    Role_status = [
+        ('Author', 'author'), 
+        ('Designer', 'Designer'), 
+        ('Director', 'director'), 
+        ('Creator', 'Creator'), 
+        ('Character Designer', 'Character Designer'), 
+    ]
+    author = models.CharField(max_length=256)
+    role = models.CharField(choices=Role_status, max_length=30, default='Author')

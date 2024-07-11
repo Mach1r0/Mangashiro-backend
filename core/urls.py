@@ -1,6 +1,5 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AllAppsView  
 from user.views import UserViewSet
 from anime.views import AnimeViewSet
 from manga.views import MangaViewSet
@@ -17,6 +16,5 @@ router.register(r'tag', TagViewSet, basename='tag')
 router.register(r'staff', StaffViewSet, basename='Staff')
 
 urlpatterns = [
-    path('', AllAppsView.as_view(), name='all-apps'), 
-    path('api/', include(router.urls)),  
+    path('', include(router.urls)),  
 ]
