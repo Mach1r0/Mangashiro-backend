@@ -12,7 +12,7 @@ class Manga(models.Model):
     title = models.CharField(max_length=256)  
     description = models.CharField(max_length=5000)
     slug = models.CharField(max_length=256, unique=True, blank=False, null=False)
-    Chapters = models.IntegerField()
+    chapters = models.IntegerField(default=1)  
     volume = models.IntegerField()
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tag')  
     release_date = models.DateField(null=True)  
