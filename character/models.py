@@ -6,3 +6,7 @@ class Character(models.Model):
     age = models.IntegerField()
     description = models.CharField(max_length=400)
     anime = models.ForeignKey(Anime, verbose_name="anime", on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.name
+    

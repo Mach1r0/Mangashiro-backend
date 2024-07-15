@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from django.contrib import admin
 from user.views import UserViewSet
 from anime.views import AnimeViewSet
 from manga.views import MangaViewSet
@@ -16,5 +17,6 @@ router.register(r'tag', TagViewSet, basename='tag')
 router.register(r'staff', StaffViewSet, basename='Staff')
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', include(router.urls)),  
 ]
