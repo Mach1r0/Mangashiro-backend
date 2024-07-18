@@ -53,9 +53,19 @@ class AnimeState(models.Model):
     def __str__(self):
         return f"{self.user.name} - {self.anime.title} - {self.state}"
 
-class Review(models.Model):
+class ReviewManga(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, null=True, blank=True)
+    manga = models.ForeignKey(Manga, on_delete=models.CASCADE, null=True, blank=True)
+    rating = models.IntegerField(default=0)
+    Title = models.CharField(max_length=100)
+    content = models.TextField() 
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'Review by {self.user.name} on {self.date_posted.strftime("%Y-%m-%d")}'
+
+class ReviewAnime(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     manga = models.ForeignKey(Manga, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.IntegerField(default=0)
     Title = models.CharField(max_length=100)

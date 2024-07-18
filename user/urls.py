@@ -1,22 +1,24 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter  
-from user.views import UserView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from user.views import (
+    UserViewSet,
+    ReviewMangaViewSet,
+    ReviewAnimeViewSet,
+    HighestRatedMangaView,
+    HighestRatedAnimeView,
+)
 
 router = DefaultRouter()
-router.register('User', UserView, basename='user')
+router.register('users', UserViewSet, basename='user')
+router.register('review-manga', ReviewMangaViewSet, basename='review-manga')
+router.register('review-anime', ReviewAnimeViewSet, basename='review-anime')
 
 urlpatterns = [
-    path('create/', UserView.as_view({
-        'post': 'create'
-    })),
-    path("", include(router.urls)),
-    path('createtoken/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path("refreshtoken/", TokenRefreshView.as_view(), name='token_refresh'),
-    path('login/', UserView.as_view({
-        'post': 'login'
-    })),
-]   
+    path('', include(router.urls)),
+    path('highest-rated-manga/', HighestRatedMangaView.as_view(), name='highest-rated-manga'),
+    path('highest-rated-anime/', HighestRatedAnimeView.as_view(), name='highest-rated-anime'),
+]

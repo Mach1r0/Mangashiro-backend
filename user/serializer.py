@@ -1,14 +1,21 @@
 from rest_framework import serializers
-from user.models import User, Review, AnimeState, MangaState
+from user.models import User, ReviewAnime, ReviewManga, AnimeState, MangaState
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
 
-class ReviewSerializer(serializers.ModelSerializer):
+
+
+class ReviewMangaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Review
+        model = ReviewManga
+        fields = '__all__'
+
+class ReviewAnimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReviewAnime
         fields = '__all__'
 
 class AnimeStatesSerializer(serializers.ModelSerializer):
@@ -20,3 +27,4 @@ class MangaStateSerializer(serializers.ModelSerializer):
     class Meta: 
         model = MangaState
         fields = '__all__'
+
