@@ -7,8 +7,8 @@ class User(models.Model):
     name = models.CharField(unique=True,blank=False, null=False,  max_length=100)
     nickname = models.CharField(max_length=256, null=True,)
     password = models.CharField(max_length=256)
-    background = models.ImageField(upload_to='background/', blank=True, null=True)
-    image = models.ImageField(upload_to='user/', blank=True, null=True)
+    background = models.ImageField(upload_to='static/background-user-img', blank=True, null=True)
+    image = models.ImageField(upload_to='static/user-img', blank=True, null=True)
     email = models.CharField(max_length=256)
     anime = models.ManyToManyField(Anime, through='AnimeState', related_name='users')
     manga = models.ManyToManyField(Manga, through='MangaState', related_name='users')
@@ -66,7 +66,7 @@ class ReviewManga(models.Model):
 
 class ReviewAnime(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    manga = models.ForeignKey(Manga, on_delete=models.CASCADE, null=True, blank=True)
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, null=True, blank=True)  
     rating = models.IntegerField(default=0)
     Title = models.CharField(max_length=100)
     content = models.TextField() 

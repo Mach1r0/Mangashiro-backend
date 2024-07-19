@@ -1,0 +1,133 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "JohnDoe",
+        "nickname": "Johnny",
+        "password": "password123",
+        "background": "background/johndoe_bg.jpg",
+        "image": "user/johndoe.jpg",
+        "email": "johndoe@example.com",
+        "anime": [1, 2],
+        "manga": [1],
+        "description": "Anime and manga enthusiast.",
+        "description_image": "description/johndoe_description.jpg"
+      }
+    ],
+    "studios": [
+      {
+        "id": 1,
+        "name": "Studio Ghibli"
+      },
+      {
+        "id": 2,
+        "name": "Bones"
+      }
+    ],
+    "tags": [
+      {
+        "id": 1,
+        "name": "Action"
+      },
+      {
+        "id": 2,
+        "name": "Adventure"
+      }
+    ],
+    "anime": [
+      {
+        "id": 1,
+        "title": "My Hero Academia",
+        "title_japanese": "僕のヒーローアカデミア",
+        "episodes": 88,
+        "release_date": "2016-04-03",
+        "end_date": "2020-04-04",
+        "duration": 24,
+        "studios": [2],
+        "source": "manga",
+        "tag": [1, 2],
+        "image": "anime/my_hero_academia.jpg"
+      },
+      {
+        "id": 2,
+        "title": "Spirited Away",
+        "title_japanese": "千と千尋の神隠し",
+        "episodes": 1,
+        "release_date": "2001-07-20",
+        "end_date": "2001-07-20",
+        "duration": 125,
+        "studios": [1],
+        "source": "original",
+        "tag": [2],
+        "image": "anime/spirited_away.jpg"
+      }
+    ],
+    "manga": [
+      {
+        "id": 1,
+        "title": "Attack on Titan",
+        "description": "Humanity fights for survival against the Titans.",
+        "chapters": 139,
+        "volume": 34,
+        "tag": [1],
+        "release_date": "2009-09-09",
+        "end_date": "2021-04-09",
+        "image": "manga/attack_on_titan.jpg",
+        "status_type": "COMPLETED"
+      }
+    ],
+    "staff": [
+      {
+        "id": 1,
+        "author": "Hayao Miyazaki",
+        "role": "Director"
+      },
+      {
+        "id": 2,
+        "author": "Kohei Horikoshi",
+        "role": "Author"
+      }
+    ],
+    "manga_states": [
+      {
+        "id": 1,
+        "user": 1,
+        "manga": 1,
+        "state": "READING",
+        "times_read": 2
+      }
+    ],
+    "anime_states": [
+      {
+        "id": 1,
+        "user": 1,
+        "anime": 1,
+        "state": "WATCHING",
+        "Progress": 5,
+        "times_watched": 1
+      }
+    ],
+    "review_manga": [
+      {
+        "id": 1,
+        "user": 1,
+        "manga": 1,
+        "rating": 9,
+        "title": "Incredible Story",
+        "content": "The plot twists are mind-blowing!",
+        "date_posted": "2024-07-18T12:34:56"
+      }
+    ],
+    "review_anime": [
+      {
+        "id": 1,
+        "user": 1,
+        "anime": 1,
+        "rating": 8,
+        "title": "Great Animation",
+        "content": "The animation quality is outstanding.",
+        "date_posted": "2024-07-18T14:23:45"
+      }
+    ]
+  }
+  

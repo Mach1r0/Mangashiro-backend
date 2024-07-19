@@ -84,7 +84,7 @@ def get_highest_rated_manga():
 
 
 def get_highest_rated_anime():
-    anime_highest_rate = Anime.objects.annotate(avg_rating=Avg('reviewanime__rating'))
+    anime_highest_rate = Anime.objects.annotate(avg_rating=Avg('reviewanime__rating'))  
     highest_rated_anime = anime_highest_rate.order_by('-avg_rating').first()
     return highest_rated_anime
 

@@ -16,7 +16,7 @@ class Manga(models.Model):
     tag = models.ManyToManyField(Tag, related_name='tag')  
     release_date = models.DateField(null=True)  
     end_date = models.DateField() 
-    image = models.ImageField(upload_to='manga/', null=True, blank=True)  
+    image = models.ImageField(upload_to='static/anime-img', null=True, blank=True)  
     status_type = models.CharField(choices=Status_choice, max_length=30)
 
     def __str__(self) -> str:

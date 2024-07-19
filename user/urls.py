@@ -19,6 +19,6 @@ router.register('review-anime', ReviewAnimeViewSet, basename='review-anime')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('highest-rated-manga/', HighestRatedMangaView.as_view(), name='highest-rated-manga'),
-    path('highest-rated-anime/', HighestRatedAnimeView.as_view(), name='highest-rated-anime'),
+    path('highest-rated-manga/', HighestRatedMangaView.as_view({'get': 'list'}), name='highest-rated-manga'),
+    path('highest-rated-anime/', HighestRatedAnimeView.as_view({'get': 'list'}), name='highest-rated-anime'),
 ]

@@ -13,7 +13,7 @@ class Anime(models.Model):
 
     Source_choice = [ 
         ('manga', 'manga'), 
-        ('Night lovel', 'Night lovel'),
+        ('Light novel', 'Light novel'),
         ('Crunchyroll', 'Crunchyroll'),
         ('Netflix', 'Netflix'),
     ]
@@ -27,7 +27,7 @@ class Anime(models.Model):
     studios = models.ManyToManyField(Studio, verbose_name="studios")  
     Source = models.CharField(choices=Source_choice, max_length=100, default='default_value')
     tag = models.ManyToManyField(Tag, verbose_name="Tag")
-    image = models.ImageField(upload_to='anime/', null=True, blank=True)  
+    image = models.ImageField(upload_to='static/anime-img/', null=True, blank=True)  
     
     def __str__(self) -> str:
         return self.title; 
