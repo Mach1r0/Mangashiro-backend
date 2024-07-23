@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'anime',
     'manga',
     'studio',
+    'character',
     ]
 
 MIDDLEWARE = [

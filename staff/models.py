@@ -9,4 +9,5 @@ class Staff(models.Model):
         ('Character Designer', 'Character Designer'), 
     ]
     author = models.CharField(max_length=256)
+    image = models.ImageField(upload_to='static/staff-image', blank=True, null=True)
     role = models.CharField(choices=Role_status, max_length=30, default='Author')

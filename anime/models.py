@@ -28,6 +28,7 @@ class Anime(models.Model):
     Source = models.CharField(choices=Source_choice, max_length=100, default='default_value')
     tag = models.ManyToManyField(Tag, verbose_name="Tag")
     image = models.ImageField(upload_to='static/anime-img/', null=True, blank=True)  
+    Background = models.ImageField(upload_to='static/anime-background-img/', null=True, blank=True)  
     
     def __str__(self) -> str:
         return self.title; 

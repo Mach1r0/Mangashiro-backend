@@ -5,11 +5,10 @@ from manga.models import Manga
 
 class User(models.Model):
     name = models.CharField(unique=True,blank=False, null=False,  max_length=100)
-    nickname = models.CharField(max_length=256, null=True,)
-    password = models.CharField(max_length=256)
-    background = models.ImageField(upload_to='static/background-user-img', blank=True, null=True)
-    image = models.ImageField(upload_to='static/user-img', blank=True, null=True)
-    email = models.CharField(max_length=256)
+    nickname = models.CharField(max_length=256, null=False, blank=False)
+    password = models.CharField(max_length=256,  null=False, blank=False)
+    background = models.ImageField(upload_to='static/background-user-img', blank=True, null=True) 
+    email = models.CharField(max_length=256, null=False, blank=False)
     anime = models.ManyToManyField(Anime, through='AnimeState', related_name='users')
     manga = models.ManyToManyField(Manga, through='MangaState', related_name='users')
     description = models.CharField(max_length=400)
