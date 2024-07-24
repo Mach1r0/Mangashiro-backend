@@ -77,32 +77,31 @@ class ReviewAnimeViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-def get_highest_rated_manga():
+def get_top_5_highest_rated_manga():
     manga_highest_rate = Manga.objects.annotate(avg_rating=Avg('reviewmanga__rating'))
-    highest_rated_manga = manga_highest_rate.order_by('-avg_rating').first()
-    return highest_rated_manga
+    top_5_highest_rated_manga = manga_highest_rate.order_by('-avg_rating')[:10]
+    return top_5_highest_rated_manga
 
-
-def get_highest_rated_anime():
-    anime_highest_rate = Anime.objects.annotate(avg_rating=Avg('reviewanime__rating'))  
-    highest_rated_anime = anime_highest_rate.order_by('-avg_rating').first()
-    return highest_rated_anime
+def get_top_5_highest_rated_anime():
+    anime_highest_rate = Anime.objects.annotate(avg_rating=Avg('reviewanime__rating'))
+    top_5_highest_rated_anime = anime_highest_rate.order_by('-avg_rating')[:10]
+    return top_5_highest_rated_anime
 
 
 class HighestRatedMangaView(viewsets.ViewSet):
     def list(self, request):
-        manga = get_highest_rated_manga()
-        if manga:
-            serializer = MangaSerializer(manga)
+        top_manga = get_top_5_highest_rated_manga()
+        if top_manga.exists():
+            serializer = MangaSerializer(top_manga, many=True)
             return Response(serializer.data)
         else:
             return Response({"message": "No manga found"}, status=status.HTTP_404_NOT_FOUND)
 
 class HighestRatedAnimeView(viewsets.ViewSet):
     def list(self, request):
-        anime = get_highest_rated_anime()
-        if anime:
-            serializer = AnimeSerializer(anime)
+        top_anime = get_top_5_highest_rated_anime()
+        if top_anime.exists():
+            serializer = AnimeSerializer(top_anime, many=True)
             return Response(serializer.data)
         else:
-            return Response({})
+            return Response({"message": "No anime found"}, status=status.HTTP_404_NOT_FOUND)
