@@ -1,5 +1,6 @@
 # views.py
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from .serializer import (
     UserSerializer,
     ReviewMangaSerializer,
@@ -105,3 +106,17 @@ class HighestRatedAnimeView(viewsets.ViewSet):
             return Response(serializer.data)
         else:
             return Response({"message": "No anime found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def UserCreate(request): 
+    serializers = UserSerializer(data=request.DATA); 
+    if serializers.is_valid():
+        User.objects.is_valid(
+            serializers.init_data['email'], 
+            serializers.init_data['username'],
+            serializers.init_data['password'], 
+        )
+        return Response(serializers.data, status=status.HTTP_201_CREATED)
+    else: 
+        return Response(serializers._errors, status=status.HTTP_400_BAD_REQUEST)

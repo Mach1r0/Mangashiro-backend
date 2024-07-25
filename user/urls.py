@@ -10,6 +10,7 @@ from user.views import (
     ReviewAnimeViewSet,
     HighestRatedMangaView,
     HighestRatedAnimeView,
+    UserCreate
 )
 
 router = DefaultRouter()
@@ -19,6 +20,7 @@ router.register('review-anime', ReviewAnimeViewSet, basename='review-anime')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('UserCreate/', UserCreate, name='CreateUser'),  # Fixed the path
     path('highest-rated-manga/', HighestRatedMangaView.as_view({'get': 'list'}), name='highest-rated-manga'),
     path('highest-rated-anime/', HighestRatedAnimeView.as_view({'get': 'list'}), name='highest-rated-anime'),
 ]

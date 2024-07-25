@@ -6,8 +6,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-
-
 class ReviewMangaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewManga

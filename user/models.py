@@ -8,11 +8,11 @@ class User(models.Model):
     nickname = models.CharField(max_length=256, null=False, blank=False)
     password = models.CharField(max_length=256, null=False, blank=False)
     background = models.ImageField(upload_to='background-user-img', blank=True, null=True)  
-    imageProfile = models.ImageField(upload_to='profile-img/')
-    email = models.CharField(max_length=256, null=False, blank=False)
+    image_profile = models.ImageField(upload_to='profile-img/', blank=True, null=True)
+    email = models.EmailField(max_length=256, null=False, blank=False)
     anime = models.ManyToManyField(Anime, through='AnimeState', related_name='users')
     manga = models.ManyToManyField(Manga, through='MangaState', related_name='users')
-    description = models.CharField(max_length=400)
+    description = models.CharField(max_length=400, blank=True, null=True)
     description_image = models.ImageField(upload_to='description/', blank=True, null=True)
     
     def __str__(self):
