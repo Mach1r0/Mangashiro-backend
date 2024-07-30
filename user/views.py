@@ -19,6 +19,9 @@ from anime.serializer import AnimeSerializer
 from django.db.models import Avg
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.exceptions import AuthenticationFailed
+import jwt, datetime
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -29,8 +32,8 @@ class ReviewMangaListView(ListAPIView):
     paginate_by = 5
 
     def get_queryset(self):
-        username = self.kwargs.get('username')
-        user = get_object_or_404(User, username=username)
+        nickname = self.kwargs.get('nickname')
+        user = get_object_or_404(User, nickname=nickname)
         return ReviewManga.objects.filter(user=user).order_by('-date_posted')
 
 class ReviewAnimeListView(ListAPIView):
@@ -38,22 +41,22 @@ class ReviewAnimeListView(ListAPIView):
     paginate_by = 5
 
     def get_queryset(self):
-        username = self.kwargs.get('username')
-        user = get_object_or_404(User, username=username)
+        nickname = self.kwargs.get('nickname')
+        user = get_object_or_404(User, nickname=nickname)
         return ReviewAnime.objects.filter(user=user).order_by('-date_posted')
 
 class UserReviewMangaView(ListAPIView):
     serializer_class = ReviewMangaSerializer
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        user = get_object_or_404(User, nickname=self.kwargs.get('nickname'))
         return ReviewManga.objects.filter(user=user)
 
 class UserReviewAnimeView(ListAPIView):
     serializer_class = ReviewAnimeSerializer
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        user = get_object_or_404(User, nickname=self.kwargs.get('nickname'))
         return ReviewAnime.objects.filter(user=user)
 
 class ReviewMangaViewSet(viewsets.ModelViewSet):
@@ -107,16 +110,58 @@ class HighestRatedAnimeView(viewsets.ViewSet):
         else:
             return Response({"message": "No anime found"}, status=status.HTTP_404_NOT_FOUND)
 
+class Register(APIView):
+    def post(self, request): 
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.models import User
+import jwt
+from django.contrib.auth import get_user_model
+import datetime
+from django.contrib.auth.hashers import check_password
+import logging
 
-@api_view(['POST'])
-def UserCreate(request): 
-    serializers = UserSerializer(data=request.DATA); 
-    if serializers.is_valid():
-        User.objects.is_valid(
-            serializers.init_data['email'], 
-            serializers.init_data['username'],
-            serializers.init_data['password'], 
-        )
-        return Response(serializers.data, status=status.HTTP_201_CREATED)
-    else: 
-        return Response(serializers._errors, status=status.HTTP_400_BAD_REQUEST)
+logger = logging.getLogger(__name__)
+
+User = get_user_model()
+
+class Login(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            logger.error('Nickname and password are required.')
+            raise AuthenticationFailed('Nickname and password are required.')
+
+        # Log the attempt to fetch user
+        logger.info(f'Attempting to find user with email: {email}')
+        user = User.objects.filter(email=email).first()
+
+        if user is None:
+            logger.error(f'User not found with email: {email}')
+            raise AuthenticationFailed('User not found!')
+
+        if not check_password(password, user.password):
+            logger.error(f'Incorrect password for email: {email}')
+            raise AuthenticationFailed('Incorrect password')
+
+        payload = {
+            'id': user.id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'iat': datetime.datetime.utcnow()
+        }
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+
+        response = Response()
+        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.data = {
+            'jwt': token
+        }
+        return response

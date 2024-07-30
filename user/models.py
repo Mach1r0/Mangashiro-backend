@@ -2,22 +2,62 @@ from django.db import models
 from anime.models import Anime
 from django.utils import timezone
 from manga.models import Manga
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 
-class User(models.Model):
-    name = models.CharField(unique=True, blank=False, null=False, max_length=100)
-    nickname = models.CharField(max_length=256, null=False, blank=False)
-    password = models.CharField(max_length=256, null=False, blank=False)
-    background = models.ImageField(upload_to='background-user-img', blank=True, null=True)  
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, email, nickname, password=None, **extra_fields):
+        if not email:
+            raise ValueError(_('The Email field must be set'))
+        if not nickname:
+            raise ValueError(_('The Nickname field must be set'))
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, nickname=nickname, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, nickname, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(email, nickname, password, **extra_fields)
+
+class User(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
+    nickname = models.CharField(unique=True, max_length=256)
+    name = models.CharField(max_length=100)
+    background = models.ImageField(upload_to='background-user-img', blank=True, null=True)
     image_profile = models.ImageField(upload_to='profile-img/', blank=True, null=True)
-    email = models.EmailField(max_length=256, null=False, blank=False)
-    anime = models.ManyToManyField(Anime, through='AnimeState', related_name='users')
-    manga = models.ManyToManyField(Manga, through='MangaState', related_name='users')
     description = models.CharField(max_length=400, blank=True, null=True)
     description_image = models.ImageField(upload_to='description/', blank=True, null=True)
-    
+    anime = models.ManyToManyField('anime.Anime', through='AnimeState', related_name='users')
+    manga = models.ManyToManyField('manga.Manga', through='MangaState', related_name='users')
+
+    USERNAME_FIELD = 'nickname'
+    REQUIRED_FIELDS = ['email']
+
+    objects = UserManager()
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+
     def __str__(self):
         return self.name
-
+    
 class MangaState(models.Model):
     STATE_CHOICES = [
         ('PLANNING', 'Planning to Read'),

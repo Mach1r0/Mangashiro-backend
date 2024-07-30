@@ -24,5 +24,6 @@ router.register(r'highest-rated-anime', HighestRatedAnimeView, basename='highest
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('user/', include('user.urls')),  # Ensure this line includes the user app URLs
     path('', include(router.urls)),  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
