@@ -81,35 +81,6 @@ class ReviewAnimeViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-def get_top_5_highest_rated_manga():
-    manga_highest_rate = Manga.objects.annotate(avg_rating=Avg('reviewmanga__rating'))
-    top_5_highest_rated_manga = manga_highest_rate.order_by('-avg_rating')[:10]
-    return top_5_highest_rated_manga
-
-def get_top_5_highest_rated_anime():
-    anime_highest_rate = Anime.objects.annotate(avg_rating=Avg('reviewanime__rating'))
-    top_5_highest_rated_anime = anime_highest_rate.order_by('-avg_rating')[:10]
-    return top_5_highest_rated_anime
-
-
-class HighestRatedMangaView(viewsets.ViewSet):
-    def list(self, request):
-        top_manga = get_top_5_highest_rated_manga()
-        if top_manga.exists():
-            serializer = MangaSerializer(top_manga, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({"message": "No manga found"}, status=status.HTTP_404_NOT_FOUND)
-
-class HighestRatedAnimeView(viewsets.ViewSet):
-    def list(self, request):
-        top_anime = get_top_5_highest_rated_anime()
-        if top_anime.exists():
-            serializer = AnimeSerializer(top_anime, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({"message": "No anime found"}, status=status.HTTP_404_NOT_FOUND)
-
 class Register(APIView):
     def post(self, request): 
         serializer = UserSerializer(data=request.data)
@@ -137,7 +108,7 @@ class Login(APIView):
         password = request.data.get('password')
 
         if not email or not password:
-            logger.error('Nickname and password are required.')
+            logger.error('gmail and password are required.')
             raise AuthenticationFailed('Nickname and password are required.')
 
         # Log the attempt to fetch user
