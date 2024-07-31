@@ -1,17 +1,9 @@
 from django.db import models
-from anime.models import Anime
-from django.utils import timezone
-from manga.models import Manga
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
-
-from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+import json
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -43,8 +35,8 @@ class User(AbstractUser):
     image_profile = models.ImageField(upload_to='profile-img/', blank=True, null=True)
     description = models.CharField(max_length=400, blank=True, null=True)
     description_image = models.ImageField(upload_to='description/', blank=True, null=True)
-    anime = models.ManyToManyField('anime.Anime', through='AnimeState', related_name='users')
-    manga = models.ManyToManyField('manga.Manga', through='MangaState', related_name='users')
+    manga_states = models.JSONField(default=list, blank=True)
+    anime_states = models.JSONField(default=list, blank=True)
 
     USERNAME_FIELD = 'nickname'
     REQUIRED_FIELDS = ['email']
@@ -57,48 +49,48 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.name
-    
-class MangaState(models.Model):
-    STATE_CHOICES = [
-        ('PLANNING', 'Planning to Read'),
-        ('COMPLETED', 'Completed'),
-        ('READ', 'Read'),
-        ('DROPPED', 'Dropped'),
-        ('READING', 'Reading'),
-    ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    manga = models.ForeignKey(Manga, on_delete=models.CASCADE)
-    state = models.CharField(max_length=10, choices=STATE_CHOICES)
-    times_read = models.PositiveIntegerField(default=1)  # Tracks how many times a manga has been read
+    def add_manga_state(self, manga_id, state, times_read=1):
+        state_entry = {
+            'manga_id': manga_id,
+            'state': state,
+            'times_read': times_read
+        }
+        self.manga_states = [entry for entry in self.manga_states if entry['manga_id'] != manga_id]
+        self.manga_states.append(state_entry)
+        self.save()
 
-    def __str__(self):
-        return f"{self.user.name} - {self.manga.title} - {self.state}"
+    def add_anime_state(self, anime_id, state, progress=0, times_watched=1):
+        state_entry = {
+            'anime_id': anime_id,
+            'state': state,
+            'progress': progress,
+            'times_watched': times_watched
+        }
+        self.anime_states = [entry for entry in self.anime_states if entry['anime_id'] != anime_id]
+        self.anime_states.append(state_entry)
+        self.save()
 
-class AnimeState(models.Model):
-    STATE_CHOICES = [
-        ('PLANNING', 'Planning to Watch'),
-        ('COMPLETED', 'Completed'),
-        ('WATCHED', 'Watched'),
-        ('DROPPED', 'Dropped'),
-        ('WATCHING', 'Watching'),
-    ]
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
-    state = models.CharField(max_length=10, choices=STATE_CHOICES)
-    Progress = models.IntegerField()
-    times_watched = models.PositiveIntegerField(default=1) 
+class Manga(models.Model):
+    # Defina os campos do modelo Manga conforme necessário
+    title = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.user.name} - {self.anime.title} - {self.state}"
+        return self.title
+
+class Anime(models.Model):
+    # Defina os campos do modelo Anime conforme necessário
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
 
 class ReviewManga(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     manga = models.ForeignKey(Manga, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.IntegerField(default=0)
-    Title = models.CharField(max_length=100)
-    content = models.TextField() 
+    title = models.CharField(max_length=100)
+    content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -106,10 +98,10 @@ class ReviewManga(models.Model):
 
 class ReviewAnime(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, null=True, blank=True)  
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.IntegerField(default=0)
-    Title = models.CharField(max_length=100)
-    content = models.TextField() 
+    title = models.CharField(max_length=100)
+    content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

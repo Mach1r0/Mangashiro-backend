@@ -5,8 +5,8 @@ from .serializer import (
     UserSerializer,
     ReviewMangaSerializer,
     ReviewAnimeSerializer,
+    AnimeStateSerializer,
     MangaStateSerializer,
-    AnimeStatesSerializer
 )
 from .models import User, ReviewAnime, ReviewManga, AnimeState, MangaState
 from rest_framework.generics import ListAPIView
@@ -22,6 +22,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
+
+class AnimeStateViewSet(viewsets.ModelViewSet):
+    queryset = AnimeState.objects.all()
+    serializer_class = AnimeStateSerializer
+
+class MangaStateViewSet(viewsets.ModelViewSet):
+    queryset = MangaState.objects.all()
+    serializer_class = MangaSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

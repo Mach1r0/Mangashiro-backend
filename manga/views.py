@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from manga.models import Manga
 from manga.serializer import MangaSerializer
 from rest_framework.response import Response
+from django.db.models import Avg
+from rest_framework import status
 
 class MangaViewSet(viewsets.ModelViewSet):
     queryset = Manga.objects.all()

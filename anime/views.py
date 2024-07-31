@@ -1,8 +1,10 @@
 from rest_framework import viewsets
-from anime.models import Anime
-from anime.serializer import  AnimeSerializer
 from django.http import JsonResponse
+from anime.models import Anime
+from anime.serializer import AnimeSerializer
 from rest_framework.response import Response
+from django.db.models import Avg
+from rest_framework import status
 
 class AnimeViewSet(viewsets.ModelViewSet):
     queryset = Anime.objects.all()
@@ -30,5 +32,3 @@ class HighestRatedAnimeView(viewsets.ViewSet):
             return Response(serializer.data)
         else:
             return Response({"message": "No anime found"}, status=status.HTTP_404_NOT_FOUND)
-
-

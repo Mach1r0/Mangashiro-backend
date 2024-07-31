@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),  
     path('manga/', include('manga.urls')),
+    path('anime/', include('anime.urls')),  
     path('', include(router.urls)),  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
