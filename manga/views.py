@@ -10,7 +10,7 @@ class MangaViewSet(viewsets.ModelViewSet):
     serializer_class = MangaSerializer
 
 def get_top_5_highest_rated_manga():
-    manga_highest_rate = Manga.objects.annotate(avg_rating=Avg('reviewmanga__rating'))
+    manga_highest_rate = Manga.objects.annotate(avg_rating=Avg('reviews__rating'))
     top_5_highest_rated_manga = manga_highest_rate.order_by('-avg_rating')[:10]
     return top_5_highest_rated_manga
 

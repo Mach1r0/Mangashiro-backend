@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 router = DefaultRouter()
 router.register(r'create', AnimeViewSet, basename='create')
+router.register(r'Highest-anime', HighestRatedAnimeView, basename='Highest-anime')
 
 urlpatterns = [
     path('', include(router.urls)),

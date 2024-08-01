@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from user.models import User, ReviewAnime, ReviewManga, AnimeState, MangaState
+from user.models import User, ReviewAnime, ReviewManga
 from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
-    # Se precisar incluir os estados de manga e anime, pode adicionar campos personalizados aqui.
     manga_states = serializers.JSONField(required=False)
     anime_states = serializers.JSONField(required=False)
 
@@ -12,8 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['name', 'nickname', 'password', 'email', 'background', 'image_profile', 'description', 'description_image', 'manga_states', 'anime_states']
         extra_kwargs = {
             'password': {'write_only': True},
-            'manga_states': {'read_only': True},  # Se deseja que o campo seja somente leitura
-            'anime_states': {'read_only': True},  # Se deseja que o campo seja somente leitura
+            'manga_states': {'read_only': True},  
+            'anime_states': {'read_only': True},  
         }
 
     def create(self, validated_data):
@@ -45,12 +44,3 @@ class ReviewAnimeSerializer(serializers.ModelSerializer):
         model = ReviewAnime
         fields = '__all__'
 
-class AnimeStateSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = AnimeState
-        fields = '__all__'
-
-class MangaStateSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = MangaState
-        fields = '__all__'

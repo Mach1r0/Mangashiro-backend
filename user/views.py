@@ -5,10 +5,8 @@ from .serializer import (
     UserSerializer,
     ReviewMangaSerializer,
     ReviewAnimeSerializer,
-    AnimeStateSerializer,
-    MangaStateSerializer,
 )
-from .models import User, ReviewAnime, ReviewManga, AnimeState, MangaState
+from .models import User, ReviewAnime, ReviewManga
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from manga.models import Manga
@@ -22,14 +20,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
+import logging
 
-class AnimeStateViewSet(viewsets.ModelViewSet):
-    queryset = AnimeState.objects.all()
-    serializer_class = AnimeStateSerializer
-
-class MangaStateViewSet(viewsets.ModelViewSet):
-    queryset = MangaState.objects.all()
-    serializer_class = MangaSerializer
+logger = logging.getLogger(__name__)
+User = get_user_model()
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -96,19 +93,6 @@ class Register(APIView):
         serializer.save()
         return Response(serializer.data)
     
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-from django.contrib.auth.models import User
-import jwt
-from django.contrib.auth import get_user_model
-import datetime
-from django.contrib.auth.hashers import check_password
-import logging
-
-logger = logging.getLogger(__name__)
-
-User = get_user_model()
 
 class Login(APIView):
     def post(self, request):

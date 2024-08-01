@@ -1,4 +1,6 @@
 from django.db import models
+from manga.models import Manga
+from anime.models import Anime
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -27,6 +29,30 @@ class UserManager(BaseUserManager):
         return self.create_user(email, nickname, password, **extra_fields)
 
 class User(AbstractUser):
+    MANGA_STATE_COMPLETED = 'completed'
+    MANGA_STATE_READING = 'reading'
+    MANGA_STATE_DROPPED = 'dropped'
+    MANGA_STATE_PLANNING = 'planning'
+
+    MANGA_STATE_CHOICES = [
+        (MANGA_STATE_COMPLETED, 'Completed'),
+        (MANGA_STATE_READING, 'Reading'),
+        (MANGA_STATE_DROPPED, 'Dropped'),
+        (MANGA_STATE_PLANNING, 'Planning'),
+    ]
+
+    ANIME_STATE_COMPLETED = 'completed'
+    ANIME_STATE_WATCHING = 'watching'
+    ANIME_STATE_DROPPED = 'dropped'
+    ANIME_STATE_PLANNING = 'planning'
+
+    ANIME_STATE_CHOICES = [
+        (ANIME_STATE_COMPLETED, 'Completed'),
+        (ANIME_STATE_WATCHING, 'Watching'),
+        (ANIME_STATE_DROPPED, 'Dropped'),
+        (ANIME_STATE_PLANNING, 'Planning'),
+    ]
+    
     username = None
     email = models.EmailField(_('email address'), unique=True)
     nickname = models.CharField(unique=True, max_length=256)
@@ -39,7 +65,7 @@ class User(AbstractUser):
     anime_states = models.JSONField(default=list, blank=True)
 
     USERNAME_FIELD = 'nickname'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['']
 
     objects = UserManager()
 
@@ -50,17 +76,26 @@ class User(AbstractUser):
     def __str__(self):
         return self.name
 
-    def add_manga_state(self, manga_id, state, times_read=1):
+    def add_manga_state(self, manga_id, chapters, volume, state, times_read=1):
+        if state not in dict(self.MANGA_STATE_CHOICES):
+            raise ValueError(f"Estado inválido para manga: {state}")
+
         state_entry = {
             'manga_id': manga_id,
             'state': state,
+            'chapters': chapters, 
+            'volume': volume, 
             'times_read': times_read
         }
+
         self.manga_states = [entry for entry in self.manga_states if entry['manga_id'] != manga_id]
         self.manga_states.append(state_entry)
         self.save()
 
     def add_anime_state(self, anime_id, state, progress=0, times_watched=1):
+        if state not in dict(self.ANIME_STATE_CHOICES):
+            raise ValueError(f"Estado inválido para anime: {state}")
+
         state_entry = {
             'anime_id': anime_id,
             'state': state,
@@ -71,23 +106,9 @@ class User(AbstractUser):
         self.anime_states.append(state_entry)
         self.save()
 
-class Manga(models.Model):
-    # Defina os campos do modelo Manga conforme necessário
-    title = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.title
-
-class Anime(models.Model):
-    # Defina os campos do modelo Anime conforme necessário
-    title = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.title
-
 class ReviewManga(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    manga = models.ForeignKey(Manga, on_delete=models.CASCADE, null=True, blank=True)
+    manga = models.ForeignKey(Manga, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField(default=0)
     title = models.CharField(max_length=100)
     content = models.TextField()
