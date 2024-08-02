@@ -12,10 +12,7 @@ class AnimeSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='name'
     )
-    slug = serializers.SlugRelatedField(
-        slug_field='title',
-        read_only=True
-    )
+
 
     class Meta:
         model = Anime

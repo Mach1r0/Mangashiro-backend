@@ -1,5 +1,6 @@
 from studio.models import Studio
 from django.db import models
+from django.utils.text import slugify
 from django.utils import timezone
 from tag.models import Tag
 
@@ -29,6 +30,12 @@ class Anime(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="Tag")
     image = models.ImageField(upload_to='anime-img/', null=True, blank=True)  
     Background = models.ImageField(upload_to='anime-background-img/', null=True, blank=True)  
-    
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         return self.title; 

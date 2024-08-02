@@ -1,9 +1,11 @@
+from typing import Iterable
 from django.db import models
 from manga.models import Manga
 from anime.models import Anime
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 import json
 
@@ -63,6 +65,13 @@ class User(AbstractUser):
     description_image = models.ImageField(upload_to='description/', blank=True, null=True)
     manga_states = models.JSONField(default=list, blank=True)
     anime_states = models.JSONField(default=list, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nickname)
+        super().save(*args, **kwargs)
+
 
     USERNAME_FIELD = 'nickname'
     REQUIRED_FIELDS = ['']

@@ -2,10 +2,14 @@ from rest_framework import serializers
 from user.models import User, ReviewAnime, ReviewManga
 from django.contrib.auth.hashers import make_password
 
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     manga_states = serializers.JSONField(required=False)
     anime_states = serializers.JSONField(required=False)
-    slug = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    slug = serializers.SlugField(read_only=True)
 
     class Meta:
         model = User

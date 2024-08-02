@@ -31,6 +31,8 @@ User = get_user_model()
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'slug'
+
 
 class ReviewMangaListView(ListAPIView):
     serializer_class = ReviewMangaSerializer
@@ -94,6 +96,9 @@ class Register(APIView):
         return Response(serializer.data)
     
 
+class Review(APIView):
+    
+
 class Login(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -128,3 +133,15 @@ class Login(APIView):
             'jwt': token
         }
         return response
+
+
+class UserCount(APIView):
+    def get(self, request):
+        user_count = User.objects.count()
+
+        data = {
+            'user_count' : user_count, 
+        },
+
+        return Response(data)
+    
