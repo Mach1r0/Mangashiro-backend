@@ -5,10 +5,11 @@ from django.contrib.auth.hashers import make_password
 class UserSerializer(serializers.ModelSerializer):
     manga_states = serializers.JSONField(required=False)
     anime_states = serializers.JSONField(required=False)
+    slug = serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = User
-        fields = ['name', 'nickname', 'password', 'email', 'background', 'image_profile', 'description', 'description_image', 'manga_states', 'anime_states']
+        fields = ['name', 'nickname', 'password', 'email', 'background', 'image_profile', 'description', 'description_image', 'manga_states', 'anime_states', 'slug']
         extra_kwargs = {
             'password': {'write_only': True},
             'manga_states': {'read_only': True},  
