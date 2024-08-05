@@ -14,7 +14,6 @@ router.register(r'create', UserViewSet, basename='create')
 router.register(r'review-manga', ReviewMangaViewSet, basename='review-manga')
 router.register(r'review-anime', ReviewAnimeViewSet, basename='review-anime')
 
-
 app_name = 'user'
 
 urlpatterns = [

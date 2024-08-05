@@ -1,4 +1,3 @@
-# views.py
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from .serializer import (
@@ -6,6 +5,8 @@ from .serializer import (
     ReviewMangaSerializer,
     ReviewAnimeSerializer,
 )
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
 from .models import User, ReviewAnime, ReviewManga
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -24,6 +25,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 import logging
+import os
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -94,46 +97,39 @@ class Register(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    
-
-class Review(APIView):
-    
 
 class Login(APIView):
     def post(self, request):
-        email = request.data.get('email')
+        nickname = request.data.get('nickname')
         password = request.data.get('password')
 
-        if not email or not password:
-            logger.error('gmail and password are required.')
+        if not nickname or not password:
+            logger.error('Nickname and password are required.')
             raise AuthenticationFailed('Nickname and password are required.')
 
-        # Log the attempt to fetch user
-        logger.info(f'Attempting to find user with email: {email}')
-        user = User.objects.filter(email=email).first()
+        logger.info(f'Attempting to authenticate user with nickname: {nickname}')
+        user = authenticate(request, nickname=nickname, password=password)
 
         if user is None:
-            logger.error(f'User not found with email: {email}')
-            raise AuthenticationFailed('User not found!')
-
-        if not check_password(password, user.password):
-            logger.error(f'Incorrect password for email: {email}')
-            raise AuthenticationFailed('Incorrect password')
+            logger.error(f'Invalid credentials for nickname: {nickname}')
+            raise AuthenticationFailed('Invalid credentials.')
 
         payload = {
             'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
+            'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1),
+            'iat': datetime.datetime.now(datetime.timezone.utc)
         }
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
-        response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            'jwt': token
-        }
+        response = JsonResponse({'message': 'Login successful'})
+        response.set_cookie(
+            key='accessToken',
+            value=token,
+            httponly=True,
+            max_age=24*60*60,  
+            samesite='Strict'
+        )
         return response
-
 
 class UserCount(APIView):
     def get(self, request):
